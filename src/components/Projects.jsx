@@ -5,7 +5,7 @@ import { Github, ExternalLink, ArrowUpRight } from 'lucide-react';
 const projects = [
     {
         title: 'Lane Detection System',
-        description: 'Deep learning-based system to detect and highlight lane markings from real-time video frames. Implemented ENet (Efficient Neural Network) for lane boundary identification. Enhanced detection accuracy through image preprocessing, contributing to autonomous driving and driver-assistance system development.',
+        description: 'Engineered a real-time deep learning lane detection pipeline using ENet architecture and PyTorch, achieving precise lane boundary segmentation from video frames. Applied custom image preprocessing, edge detection, and perspective transforms to improve segmentation accuracy — contributing to safer autonomous driving and ADAS development.',
         tech: ['Python', 'PyTorch', 'OpenCV', 'ENet', 'NumPy', 'Matplotlib', 'Jupyter Notebook'],
         github: 'https://github.com/rajavel-prabakar',
         demo: '#',
@@ -14,7 +14,7 @@ const projects = [
     },
     {
         title: 'Air Quality & Pollution Analysis',
-        description: 'Comprehensive data analytics system to analyze, predict, and manage air pollution levels across multiple cities. Performed descriptive, diagnostic, and predictive analysis on AQI and major pollutants (PM2.5, PM10, NO₂, CO, SO₂, O₃). Implemented statistical testing, seasonal trend analysis, and machine-learning models to forecast pollution levels.',
+        description: 'Built a full-stack data analytics platform to analyze and forecast AQI across multiple cities using Pandas, Scikit-learn, and SciPy. Performed descriptive, diagnostic, and predictive analysis on PM2.5, PM10, NO₂, CO, SO₂, and O₃ pollutants. Implemented seasonal trend analysis and ML regression models to predict future pollution levels with measurable accuracy gains.',
         tech: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'Scikit-learn', 'SciPy', 'Jupyter Notebook'],
         github: 'https://github.com/rajavel-prabakar',
         demo: '#',
@@ -23,7 +23,7 @@ const projects = [
     },
     {
         title: 'Customer Churn Prediction',
-        description: 'Machine learning–based churn prediction system using customer content usage, subscription history, and engagement metrics. Implemented and evaluated multiple algorithms including AdaBoost to improve prediction accuracy. Deployed as an interactive Streamlit web application for data-driven retention strategies.',
+        description: 'Developed an end-to-end ML system to identify at-risk subscribers using customer content usage, subscription history, and engagement signals. Trained and evaluated multiple algorithms with AdaBoost achieving highest precision, then deployed the solution as a live Streamlit web app — enabling real-time churn risk scoring for data-driven retention decisions.',
         tech: ['Python', 'AdaBoost', 'Scikit-learn', 'Pandas', 'Streamlit', 'Jupyter Notebook'],
         github: 'https://github.com/rajavel-prabakar',
         demo: '#',

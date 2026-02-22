@@ -12,7 +12,7 @@ const skills = [
 const stats = [
     { icon: Code2, label: 'Projects Built', value: '2+' },
     { icon: Briefcase, label: 'Internships', value: '2' },
-    { icon: Award, label: 'Certifications', value: '3' },
+    { icon: Award, label: 'Certifications', value: '8' },
     { icon: Brain, label: 'ML Models Built', value: '5+' },
 ];
 
