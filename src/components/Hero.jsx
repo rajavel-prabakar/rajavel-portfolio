@@ -166,7 +166,7 @@ export default function Hero() {
                         View Projects
                         <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
                     </button>
-                    <a href="/resume.pdf" download className="btn-secondary px-8 py-3.5 text-base">
+                    <a href="/Raj_Res.pdf" download className="btn-secondary px-8 py-3.5 text-base">
                         <Download size={18} />
                         Download Resume
                     </a>
