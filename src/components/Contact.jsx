@@ -1,205 +1,197 @@
 import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Github, Linkedin, Mail, Send, CheckCircle, MapPin, MessageSquare } from 'lucide-react';
+import { Github, Linkedin, Mail, Send, CheckCircle, MapPin } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 const socials = [
-    { icon: Github, label: 'GitHub', href: 'https://github.com/rajavel-prabakar', color: 'hover:text-gray-900 dark:hover:text-white hover:border-gray-400 dark:hover:border-gray-500' },
-    { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com/in/rajavel-p', color: 'hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400' },
-    { icon: Mail, label: 'Email', href: 'mailto:rajavelprabakar15@gmail.com', color: 'hover:text-red-500 dark:hover:text-red-400 hover:border-red-400' },
+  { icon: Github,   label: 'GitHub',   href: 'https://github.com/rajavel-prabakar' },
+  { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com/in/rajavel-p' },
+  { icon: Mail,     label: 'Email',    href: 'https://mail.google.com/mail/?view=cm&fs=1&to=rajavelprabakar15@gmail.com' },
 ];
 
-function FloatingInput({ id, label, type = 'text', value, onChange, required, textarea }) {
-    const Tag = textarea ? 'textarea' : 'input';
-    return (
-        <div className="relative">
-            <Tag
-                id={id}
-                type={type}
-                value={value}
-                onChange={onChange}
-                required={required}
-                placeholder={label}
-                rows={textarea ? 5 : undefined}
-                className={`w-full px-4 py-4 rounded-xl border-2 border-gray-200 dark:border-matte-500 bg-white dark:bg-matte-700
-          focus:border-electric-500 dark:focus:border-electric-400 focus:outline-none
-          text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600
-          transition-all duration-200 text-sm font-medium
-          ${textarea ? 'resize-none' : ''}`}
-            />
-        </div>
-    );
+const inputClass = "w-full p-3 md:p-4 rounded-xl border font-mono text-sm transition-all duration-200 outline-none select-text bg-gray-50 border-gray-200 text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:bg-[#0D1117]/60 dark:border-neon-cyan/20 dark:text-gray-100 dark:focus:border-neon-cyan/60 dark:focus:shadow-[0_0_14px_rgba(0,229,255,0.1)] dark:focus:ring-0";
+
+function TerminalInput({ id, label, type = 'text', value, onChange, required, textarea }) {
+  const Tag = textarea ? 'textarea' : 'input';
+  return (
+    <div>
+      <label
+        htmlFor={id}
+        className="block font-mono text-[0.6rem] tracking-[0.2em] mb-1.5 text-gray-500 dark:text-neon-cyan/55"
+      >
+        {'$ '}{label.toLowerCase().replace(/ /g, '_')}<span className="text-blue-500 dark:text-neon-cyan">:</span>
+      </label>
+      <Tag
+        id={id}
+        type={type}
+        value={value}
+        onChange={onChange}
+        required={required}
+        placeholder={`Enter ${label.toLowerCase()}...`}
+        rows={textarea ? 5 : undefined}
+        className={inputClass}
+        style={{ resize: textarea ? 'none' : undefined }}
+      />
+    </div>
+  );
 }
 
 export default function Contact() {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: '-80px' });
-    const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
-    const [sent, setSent] = useState(false);
-    const [loading, setLoading] = useState(false);
+  const ref      = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const [form, setForm]     = useState({ name: '', email: '', subject: '', message: '' });
+  const [sent, setSent]     = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    const handleChange = (field) => (e) => setForm(f => ({ ...f, [field]: e.target.value }));
+  const handleChange = field => e => setForm({ ...form, [field]: e.target.value });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        // Simulate send
-        await new Promise(r => setTimeout(r, 1500));
-        setSent(true);
-        setLoading(false);
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await emailjs.send('service_phhzvjo', 'template_vvbs3ui',
+        { name: form.name, email: form.email, subject: form.subject, message: form.message },
+        '79zBYL6HlY7VFkQGS'
+      );
+      setSent(true);
+      setForm({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      console.error('Email send failed:', err);
+      alert('Failed to send message. Please try again.');
+    }
+    setLoading(false);
+  };
 
-    return (
-        <section id="contact" ref={ref} className="section-pad bg-gray-50/50 dark:bg-matte-800/30">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+  return (
+    <section id="contact" ref={ref} className="section-pad" style={{ position: 'relative', zIndex: 1 }}>
+      <div className="max-w-6xl mx-auto px-4">
 
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.55 }}
+          className="text-center mb-16"
+        >
+          <span style={{
+            fontFamily: '"IBM Plex Mono", monospace',
+            fontSize: '0.65rem', letterSpacing: '0.3em', color: '#00E5FF',
+            display: 'block', marginBottom: 12,
+          }}>
+            {'>'} CONTACT_NODE --open
+          </span>
+          <h2 className="section-title text-gray-900 dark:text-white">
+            Establish{' '}
+            <span style={{
+              background: 'linear-gradient(135deg, #00E5FF, #7B61FF)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            }}>Connection</span>
+          </h2>
+          <p className="mt-2 text-gray-600 dark:text-white/40">
+            Open to collaborations, opportunities, and interesting discussions.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+
+          {/* Left — Info */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-5"
+          >
+            <div className="p-6 rounded-xl bg-white text-center border border-[#CBD5E1] dark:border-neon-cyan/20 dark:bg-[#0D1117]/80 shadow-sm">
+              <p className="font-mono text-[0.6rem] tracking-[0.25em] mb-4 text-gray-400 dark:text-neon-cyan/50">
+                // CONTACT_DETAILS
+              </p>
+              <div className="space-y-3">
+                <a
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=rajavelprabakar15@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 text-[0.82rem] transition-colors duration-200 text-gray-600 hover:text-blue-600 dark:text-white/55 dark:hover:text-neon-cyan no-underline"
                 >
-                    <span className="text-xs font-bold tracking-[0.3em] uppercase text-electric-500 dark:text-electric-400 mb-3 block">
-                        Get In Touch
-                    </span>
-                    <h2 className="section-title text-navy-900 dark:text-white">
-                        Let's{' '}
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-600 to-navy-600 dark:from-electric-400 dark:to-blue-400">
-                            Connect
-                        </span>
-                    </h2>
-                    <p className="text-gray-500 dark:text-gray-500 mt-3 max-w-md mx-auto">
-                        Open to full-time roles, freelance projects, and exciting collaborations. Drop a message!
-                    </p>
-                </motion.div>
-
-                <div className="grid lg:grid-cols-5 gap-8 items-start">
-
-                    {/* Left Info Panel */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -40 }}
-                        animate={isInView ? { opacity: 1, x: 0 } : {}}
-                        transition={{ duration: 0.7, delay: 0.2 }}
-                        className="lg:col-span-2 space-y-6"
-                    >
-                        {/* Availability */}
-                        <div className="p-6 rounded-2xl bg-white dark:bg-matte-700/60 border border-gray-100 dark:border-matte-500/40">
-                            <div className="flex items-center gap-2 mb-3">
-                                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-sm font-semibold text-green-600 dark:text-green-400">Available for Work</span>
-                            </div>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                                Currently open to <strong className="text-navy-800 dark:text-white">full-time</strong> roles in data science, machine learning, and software development. Response within 24 hours.
-                            </p>
-                        </div>
-
-                        {/* Contact Info */}
-                        <div className="p-6 rounded-2xl bg-white dark:bg-matte-700/60 border border-gray-100 dark:border-matte-500/40 space-y-4">
-                            <h3 className="font-display font-bold text-navy-900 dark:text-white">Contact Details</h3>
-                            <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
-                                <Mail size={16} className="text-electric-500 flex-shrink-0" />
-                                <a href="mailto:rajavelprabakar15@gmail.com" className="hover:text-electric-600 dark:hover:text-electric-400 transition-colors duration-200">
-                                    rajavelprabakar15@gmail.com
-                                </a>
-                            </div>
-                            <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
-                                <MapPin size={16} className="text-electric-500 flex-shrink-0" />
-                                <span>Attur, Salem / Chennai, India</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
-                                <MessageSquare size={16} className="text-electric-500 flex-shrink-0" />
-                                <span>Response time: &lt; 24 hours</span>
-                            </div>
-                        </div>
-
-                        {/* Social Icons */}
-                        <div className="p-6 rounded-2xl bg-white dark:bg-matte-700/60 border border-gray-100 dark:border-matte-500/40">
-                            <h3 className="font-display font-bold text-navy-900 dark:text-white mb-4">Find Me Online</h3>
-                            <div className="flex gap-3">
-                                {socials.map(({ icon: Icon, label, href, color }) => (
-                                    <a
-                                        key={label}
-                                        href={href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={label}
-                                        className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-xl
-                      border border-gray-200 dark:border-matte-500 text-gray-400 dark:text-gray-500
-                      ${color} hover:bg-gray-50 dark:hover:bg-matte-600
-                      transition-all duration-200 group`}
-                                    >
-                                        <Icon size={20} />
-                                        <span className="text-[10px] font-semibold">{label}</span>
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    {/* Right — Form */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 40 }}
-                        animate={isInView ? { opacity: 1, x: 0 } : {}}
-                        transition={{ duration: 0.7, delay: 0.3 }}
-                        className="lg:col-span-3"
-                    >
-                        <div className="p-7 rounded-2xl bg-white dark:bg-matte-700/60 border border-gray-100 dark:border-matte-500/40 shadow-navy-sm">
-                            <AnimatePresence mode="wait">
-                                {sent ? (
-                                    <motion.div
-                                        key="success"
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="flex flex-col items-center justify-center py-16 text-center gap-4"
-                                    >
-                                        <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                                            <CheckCircle size={32} className="text-green-500" />
-                                        </div>
-                                        <h3 className="font-display font-bold text-xl text-navy-900 dark:text-white">Message Sent!</h3>
-                                        <p className="text-gray-500 dark:text-gray-400 max-w-sm">
-                                            Thanks for reaching out! I'll get back to you within 24 hours.
-                                        </p>
-                                        <button onClick={() => { setSent(false); setForm({ name: '', email: '', subject: '', message: '' }); }} className="btn-secondary mt-2">
-                                            Send Another
-                                        </button>
-                                    </motion.div>
-                                ) : (
-                                    <motion.form
-                                        key="form"
-                                        onSubmit={handleSubmit}
-                                        className="space-y-4"
-                                    >
-                                        <div className="grid sm:grid-cols-2 gap-4">
-                                            <FloatingInput id="name" label="Your Name" value={form.name} onChange={handleChange('name')} required />
-                                            <FloatingInput id="email" label="Email Address" type="email" value={form.email} onChange={handleChange('email')} required />
-                                        </div>
-                                        <FloatingInput id="subject" label="Subject" value={form.subject} onChange={handleChange('subject')} required />
-                                        <FloatingInput id="message" label="Your Message..." value={form.message} onChange={handleChange('message')} textarea required />
-
-                                        <button
-                                            type="submit"
-                                            disabled={loading}
-                                            className="btn-primary w-full justify-center py-3.5 text-base disabled:opacity-60 disabled:cursor-not-allowed"
-                                        >
-                                            {loading ? (
-                                                <>
-                                                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                    Sending...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Send size={18} />
-                                                    Send Message
-                                                </>
-                                            )}
-                                        </button>
-                                    </motion.form>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    </motion.div>
+                  <Mail size={14} style={{ color: '#00E5FF' }} />
+                  rajavelprabakar15@gmail.com
+                </a>
+                <div className="flex items-center gap-3 text-[0.82rem] text-gray-500 dark:text-white/45">
+                  <MapPin size={14} className="text-purple-500 dark:text-neon-purple" />
+                  Attur, Salem / Chennai
                 </div>
+              </div>
             </div>
-        </section>
-    );
+
+            {/* Social nodes */}
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#0D1117]/70 border border-[#CBD5E1] dark:border-neon-cyan/10 shadow-sm">
+              <p className="font-mono text-[0.6rem] tracking-[0.25em] mb-4 text-gray-400 dark:text-neon-cyan/50">
+                // NETWORK_NODES
+              </p>
+              <div className="flex gap-3">
+                {socials.map(({ icon: Icon, label, href }) => (
+                  <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 rounded-xl border transition-all duration-300 group border-[#CBD5E1] bg-[#F7FAFC] text-[#475569] hover:border-[#0066FF] hover:bg-white hover:text-[#0066FF] hover:shadow-[0_4px_12px_rgba(0,102,255,0.1)] dark:border-neon-cyan/20 dark:bg-neon-cyan/5 dark:text-neon-cyan/60 dark:hover:border-neon-cyan dark:hover:bg-neon-cyan/10 dark:hover:text-neon-cyan dark:hover:shadow-[0_0_15px_rgba(0,229,255,0.2)]"
+              >
+                    <Icon size={13} />
+                    {label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right — Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="p-7 rounded-2xl bg-white dark:bg-[#0D1117]/70 border border-gray-200 dark:border-neon-cyan/10 shadow-sm"
+          >
+            <AnimatePresence mode="wait">
+              {sent ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-12"
+                >
+                  <CheckCircle size={40} style={{ margin: '0 auto 12px', color: '#00FFA3' }} />
+                  <h3 className="font-display font-bold text-[1.2rem] mb-1.5 text-gray-900 dark:text-white">
+                    Transmission Sent!
+                  </h3>
+                  <p className="text-[0.85rem] mb-5 text-gray-600 dark:text-white/45">
+                    Signal received. I'll respond soon.
+                  </p>
+                  <button onClick={() => setSent(false)} className="btn-secondary text-sm px-5 py-2">
+                    Send Another
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.form key="form" onSubmit={handleSubmit} className="space-y-4">
+                  <TerminalInput id="name"    label="Your Name"     value={form.name}    onChange={handleChange('name')}    required />
+                  <TerminalInput id="email"   label="Email Address" type="email" value={form.email}   onChange={handleChange('email')}   required />
+                  <TerminalInput id="subject" label="Subject"       value={form.subject} onChange={handleChange('subject')} required />
+                  <TerminalInput id="message" label="Your Message"  textarea value={form.message} onChange={handleChange('message')} required />
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full btn-primary justify-center"
+                    style={{ opacity: loading ? 0.7 : 1 }}
+                  >
+                    <Send size={16} />
+                    {loading ? 'Transmitting...' : '[ TRANSMIT → ]'}
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
 }

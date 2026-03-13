@@ -1,144 +1,264 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
-const categories = [
-    {
-        title: 'Programming',
-        color: 'from-violet-500 to-purple-600',
-        glow: 'group-hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]',
-        skills: [
-            { name: 'Python', level: 90, icon: '🐍' },
-            { name: 'React', level: 80, icon: '⚛️' },
-            { name: 'JavaScript', level: 78, icon: '⚡' },
-            { name: 'HTML & CSS', level: 82, icon: '🎨' },
-            { name: 'SQL', level: 85, icon: '🗃️' },
-        ],
-    },
-    {
-        title: 'AI / ML',
-        color: 'from-electric-500 to-blue-600',
-        glow: 'group-hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]',
-        skills: [
-            { name: 'PyTorch', level: 82, icon: '🔥' },
-            { name: 'Scikit-learn', level: 85, icon: '🔬' },
-            { name: 'OpenCV', level: 78, icon: '👁️' },
-            { name: 'Pandas & NumPy', level: 88, icon: '📊' },
-            { name: 'AdaBoost / ENet', level: 75, icon: '🧠' },
-        ],
-    },
-    {
-        title: 'Tools & Analytics',
-        color: 'from-emerald-500 to-teal-600',
-        glow: 'group-hover:shadow-[0_0_30px_rgba(16,185,129,0.3)]',
-        skills: [
-            { name: 'Git & GitHub', level: 88, icon: '📦' },
-            { name: 'Tableau', level: 78, icon: '📈' },
-            { name: 'Power BI', level: 75, icon: '📉' },
-            { name: 'Jupyter Notebook', level: 90, icon: '📓' },
-            { name: 'Streamlit', level: 80, icon: '🚀' },
-        ],
-    },
-    {
-        title: 'Database',
-        color: 'from-orange-500 to-amber-600',
-        glow: 'group-hover:shadow-[0_0_30px_rgba(249,115,22,0.3)]',
-        skills: [
-            { name: 'MySQL', level: 85, icon: '🗄️' },
-            { name: 'Data Preprocessing', level: 88, icon: '🔧' },
-            { name: 'Statistical Analysis', level: 82, icon: '📐' },
-            { name: 'Data Visualization', level: 85, icon: '📊' },
-            { name: 'Predictive Modeling', level: 80, icon: '🎯' },
-        ],
-    },
+const strands = [
+  {
+    label: 'PROGRAMMING',
+    accent: '#00E5FF',
+    shadow: 'rgba(0,229,255,0.4)',
+    skills: [
+      { name: 'Python',      level: 90 },
+      { name: 'React',       level: 80 },
+      { name: 'JavaScript',  level: 78 },
+      { name: 'HTML & CSS',  level: 82 },
+      { name: 'SQL',         level: 85 },
+    ],
+  },
+  {
+    label: 'AI / ML',
+    accent: '#7B61FF',
+    shadow: 'rgba(123,97,255,0.4)',
+    skills: [
+      { name: 'PyTorch',        level: 82 },
+      { name: 'Scikit-learn',   level: 85 },
+      { name: 'OpenCV',         level: 78 },
+      { name: 'Pandas/NumPy',   level: 88 },
+      { name: 'AdaBoost/ENet',  level: 75 },
+    ],
+  },
+  {
+    label: 'TOOLS',
+    accent: '#00FFA3',
+    shadow: 'rgba(0,255,163,0.4)',
+    skills: [
+      { name: 'Git & GitHub',    level: 88 },
+      { name: 'Tableau',         level: 78 },
+      { name: 'Power BI',        level: 75 },
+      { name: 'Jupyter',         level: 90 },
+      { name: 'Streamlit',       level: 80 },
+    ],
+  },
+  {
+    label: 'DATABASE',
+    accent: '#FF61D8',
+    shadow: 'rgba(255,97,216,0.35)',
+    skills: [
+      { name: 'MySQL',               level: 85 },
+      { name: 'Data Preprocessing',  level: 88 },
+      { name: 'Statistical Analysis',level: 82 },
+      { name: 'Data Visualization',  level: 85 },
+      { name: 'Predictive Modeling', level: 80 },
+    ],
+  },
 ];
 
-function SkillBar({ name, level, icon, inView, delay }) {
-    return (
-        <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-sm">
-                <span className="flex items-center gap-2 font-medium text-gray-700 dark:text-gray-300">
-                    <span>{icon}</span> {name}
-                </span>
-                <span className="text-xs font-bold text-gray-400 dark:text-gray-500">{level}%</span>
-            </div>
-            <div className="h-1.5 bg-gray-100 dark:bg-matte-600 rounded-full overflow-hidden">
-                <motion.div
-                    initial={{ width: 0 }}
-                    animate={inView ? { width: `${level}%` } : { width: 0 }}
-                    transition={{ duration: 1.2, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="h-full rounded-full bg-gradient-to-r from-current to-current"
-                    style={{ background: 'linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)' }}
-                />
-            </div>
+/* ─── Single DNA Node row ──────────────────────────────────────────── */
+function SkillNode({ name, level, accent, shadow, inView, delay }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -12 }}
+      animate={inView ? { opacity: 1, x: 0 } : {}}
+      transition={{ duration: 0.45, delay }}
+      className="flex items-center gap-3 group"
+    >
+      {/* Connecting line + node */}
+      <div className="flex items-center gap-1 flex-shrink-0" style={{ width: 90 }}>
+        <span
+          className="text-right truncate text-[0.67rem] font-mono w-[70px] text-gray-500 dark:text-white/55"
+        >
+          {name}
+        </span>
+        {/* Dashed line */}
+        <motion.div
+          initial={{ width: 0 }}
+          animate={inView ? { width: 16 } : { width: 0 }}
+          transition={{ duration: 0.4, delay: delay + 0.1 }}
+          style={{ height: 1, background: `${accent}55`, flexShrink: 0 }}
+        />
+        {/* Node dot */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={inView ? { scale: 1 } : { scale: 0 }}
+          transition={{ duration: 0.3, delay: delay + 0.2, type: 'spring', stiffness: 300 }}
+          style={{
+            width: 9,
+            height: 9,
+            borderRadius: '50%',
+            background: accent,
+            boxShadow: `0 0 8px ${shadow}`,
+            flexShrink: 0,
+          }}
+        />
+      </div>
+
+      {/* Percentage bar */}
+      <div style={{ flex: 1 }}>
+        <div
+          style={{
+            height: 2,
+            background: 'rgba(255,255,255,0.07)',
+            borderRadius: 2,
+            overflow: 'hidden',
+          }}
+        >
+          <motion.div
+            initial={{ width: 0 }}
+            animate={inView ? { width: `${level}%` } : { width: 0 }}
+            transition={{ duration: 1.1, delay: delay + 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+            style={{
+              height: '100%',
+              background: `linear-gradient(to right, ${accent}, ${accent}88)`,
+              borderRadius: 2,
+              boxShadow: `0 0 6px ${accent}66`,
+            }}
+          />
         </div>
-    );
+      </div>
+
+      {/* Level label */}
+      <span
+        style={{
+          fontFamily: '"IBM Plex Mono", monospace',
+          fontSize: '0.6rem',
+          color: accent,
+          opacity: 0.7,
+          width: 28,
+          textAlign: 'right',
+        }}
+      >
+        {level}%
+      </span>
+    </motion.div>
+  );
+}
+
+/* ─── Strand panel ─────────────────────────────────────────────────── */
+function StrandPanel({ strand, strandIndex, inView }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: strandIndex * 0.1 }}
+      className="relative flex flex-col gap-4 p-6 rounded-2xl bg-white dark:bg-[#0D1117]/70 shadow-sm"
+      style={{
+        border: `1px solid ${strand.accent}22`,
+        transition: 'border-color 0.3s, box-shadow 0.3s',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = `${strand.accent}55`;
+        e.currentTarget.style.boxShadow = `0 0 24px ${strand.shadow.replace('0.4', '0.1')}`;
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = `${strand.accent}22`;
+        e.currentTarget.style.boxShadow = 'none';
+      }}
+    >
+      {/* Category header */}
+      <div className="flex items-center gap-2 mb-1">
+        <div
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: strand.accent,
+            boxShadow: `0 0 8px ${strand.shadow}`,
+          }}
+        />
+        <span
+          style={{
+            fontFamily: '"IBM Plex Mono", monospace',
+            fontSize: '0.65rem',
+            letterSpacing: '0.2em',
+            color: strand.accent,
+            fontWeight: 600,
+          }}
+        >
+          {strand.label}
+        </span>
+      </div>
+
+      {/* Vertical DNA spine */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 28,
+          top: 56,
+          bottom: 20,
+          width: 1,
+          background: `linear-gradient(to bottom, ${strand.accent}44, transparent)`,
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Skill nodes */}
+      <div className="flex flex-col gap-3.5 pl-4">
+        {strand.skills.map((skill, i) => (
+          <SkillNode
+            key={skill.name}
+            {...skill}
+            accent={strand.accent}
+            shadow={strand.shadow}
+            inView={inView}
+            delay={strandIndex * 0.08 + i * 0.07}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
 }
 
 export default function Skills() {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const ref     = useRef(null);
+  const inView  = useInView(ref, { once: true, margin: '-80px' });
 
-    return (
-        <section id="skills" ref={ref} className="section-pad">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  return (
+    <section id="skills" ref={ref} className="section-pad" style={{ position: 'relative', zIndex: 1 }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
-                >
-                    <span className="text-xs font-bold tracking-[0.3em] uppercase text-electric-500 dark:text-electric-400 mb-3 block">
-                        Technical Expertise
-                    </span>
-                    <h2 className="section-title text-navy-900 dark:text-white">
-                        Skills &{' '}
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-600 to-navy-600 dark:from-electric-400 dark:to-blue-400">
-                            Technologies
-                        </span>
-                    </h2>
-                    <p className="text-gray-500 dark:text-gray-500 mt-3 max-w-xl mx-auto">
-                        A curated stack for building intelligent, scalable, and production-ready AI systems.
-                    </p>
-                </motion.div>
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.55 }}
+          className="text-center mb-16"
+        >
+          <span
+            style={{
+              fontFamily: '"IBM Plex Mono", monospace',
+              fontSize: '0.65rem',
+              letterSpacing: '0.3em',
+              color: '#00E5FF',
+              display: 'block',
+              marginBottom: 12,
+            }}
+          >
+            // TECH_GENOME.map()
+          </span>
+          <h2 className="section-title text-gray-900 dark:text-white">
+            Tech{' '}
+            <span
+              style={{
+                background: 'linear-gradient(135deg, #00E5FF, #7B61FF)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              Genome
+            </span>
+          </h2>
+          <p className="mt-2 max-w-[480px] mx-auto text-gray-600 dark:text-white/40">
+            The AI skill network powering intelligent, production-ready systems.
+          </p>
+        </motion.div>
 
-                {/* Category Cards */}
-                <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-                    {categories.map((cat, catIdx) => (
-                        <motion.div
-                            key={cat.title}
-                            initial={{ opacity: 0, y: 40 }}
-                            animate={isInView ? { opacity: 1, y: 0 } : {}}
-                            transition={{ duration: 0.6, delay: catIdx * 0.12 }}
-                            className={`group p-6 rounded-2xl bg-white dark:bg-matte-700/60
-                border border-gray-100 dark:border-matte-500/40
-                hover:border-current transition-all duration-300
-                ${cat.glow} hover:-translate-y-2`}
-                        >
-                            {/* Category Header */}
-                            <div className="flex items-center gap-3 mb-5">
-                                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-sm`}>
-                                    <div className="w-2 h-2 rounded-full bg-white/80" />
-                                </div>
-                                <h3 className="font-display font-bold text-navy-900 dark:text-white">{cat.title}</h3>
-                            </div>
-
-                            {/* Skill Bars */}
-                            <div className="space-y-3.5">
-                                {cat.skills.map((skill, i) => (
-                                    <SkillBar
-                                        key={skill.name}
-                                        {...skill}
-                                        inView={isInView}
-                                        delay={catIdx * 0.1 + i * 0.08}
-                                    />
-                                ))}
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+        {/* Strand grid */}
+        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5">
+          {strands.map((strand, i) => (
+            <StrandPanel key={strand.label} strand={strand} strandIndex={i} inView={inView} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -11,20 +11,17 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ScrollProgress from './components/ScrollProgress';
 import CustomCursor from './components/CustomCursor';
+import NeuralBackground from './components/NeuralBackground';
+import SectionTransition from './components/SectionTransition';
 
 function App() {
     const [theme, setTheme] = useState('dark');
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
-        const saved = localStorage.getItem('theme');
-        if (saved) {
-            setTheme(saved);
-            document.documentElement.classList.toggle('dark', saved === 'dark');
-        } else {
-            // Default to dark
-            document.documentElement.classList.add('dark');
-        }
+        // Always start in dark mode for the Neural Interface
+        document.documentElement.classList.add('dark');
+        setTheme('dark');
     }, []);
 
     useEffect(() => {
@@ -41,20 +38,53 @@ function App() {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-matte-900 text-gray-900 dark:text-gray-100 transition-colors duration-500">
+        <div
+            className="min-h-screen transition-colors duration-500"
+        >
+            {/* Fixed neural network background — z-index 0 */}
+            <NeuralBackground />
+
+            {/* Cursor */}
             <CustomCursor />
+
+            {/* Scroll progress bar */}
             <ScrollProgress />
+
+            {/* Navigation */}
             <Navbar scrolled={scrolled} theme={theme} toggleTheme={toggleTheme} />
-            <main>
+
+            <main style={{ position: 'relative', zIndex: 1 }}>
                 <Hero />
-                <About />
-                <Skills />
-                <Projects />
-                <Internship />
-                <Education />
-                <Certifications />
-                <Contact />
+
+                <SectionTransition label="CORE_IDENTITY">
+                    <About />
+                </SectionTransition>
+
+                <SectionTransition label="TECH_GENOME">
+                    <Skills />
+                </SectionTransition>
+
+                <SectionTransition label="AI_EXPERIMENTS">
+                    <Projects />
+                </SectionTransition>
+
+                <SectionTransition label="RUNTIME_LOG">
+                    <Internship />
+                </SectionTransition>
+
+                <SectionTransition label="DATASET_HISTORY">
+                    <Education />
+                </SectionTransition>
+
+                <SectionTransition label="CERTIFICATIONS">
+                    <Certifications />
+                </SectionTransition>
+
+                <SectionTransition label="CONTACT_NODE">
+                    <Contact />
+                </SectionTransition>
             </main>
+
             <Footer />
         </div>
     );
